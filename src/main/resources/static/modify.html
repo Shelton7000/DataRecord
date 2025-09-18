@@ -1,0 +1,27 @@
+<div ng-controller = "modController" ng-init="npwd=true; nusr=true;">{{npwd}}{{nusr}}
+	
+	
+	<div class="checkbox">
+		      <label><input type="checkbox" ng-model="nusr" value="">New username</label>
+    </div>
+	
+	
+	<div class="form-group" ng-show="nusr">
+  <label for="usr">new username</label>
+	
+  <input type="text" ng-model="nname" name="name" class="form-control" id="usr">
+</div>
+
+<div class="checkbox">
+		      <label><input type="checkbox" ng-model="npwd" value="">New password</label>
+    </div>
+
+<div class="form-group" ng-show="npwd">
+  <label for="pwd">new password</label>
+  <input type="password" ng-model="npass" name="pwd" class="form-control" id="pwd">
+</div>
+
+
+<button type="button" ng-show="npwd || nusr" ng-click="update()" class="btn btn-primary">Change</button>
+
+</div>

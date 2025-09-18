@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+<beans:bean id="contentNegotiationManager"
+             class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <beans:property name="favorPathExtension" value="false" />
+    <beans:property name="favorParameter" value="true" />
+    <beans:property name="parameterName" value="mediaType" />
+    <beans:property name="ignoreAcceptHeader" value="true"/>
+    <beans:property name="useJaf" value="false"/>
+    <beans:property name="defaultContentType" value="application/json" />
+ 
+    <beans:property name="mediaTypes">
+        <beans:map>
+            <beans:entry key="json" value="application/json" />
+            <beans:entry key="xml" value="application/xml" />
+       </beans:map>
+    </beans:property>
+</beans:bean>
+<!--  http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd / -->
+<!--    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx / -->
+   <mvc:default-servlet-handler/>
+ <mvc:annotation-driven/>
+ <mvc:interceptors>
+         <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            
+            <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+                <beans:property name="cacheSeconds" value="0"/>
+                <beans:property name="useExpiresHeader" value="true"/>
+                <beans:property name="useCacheControlHeader" value="true"/>
+                <beans:property name="useCacheControlNoStore" value="true"/>
+            </beans:bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+ 
+	<context:component-scan base-package="com.pack.*" />
+<mvc:resources  location="/views/" mapping="/views/**" />
+
+ <jpa:repositories base-package="com.pack.repo" />
+ 
+ <context:annotation-config/>
+ <beans:bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+  <beans:property name="entityManagerFactory" ref="entityManagerFactory" />
+ </beans:bean>
+ 
+ 
+ <beans:bean id="entityManagerFactory"
+  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+  <beans:property name="dataSource" ref="dataSource" />
+  <beans:property name="packagesToScan" value="com.pack.*" />
+  <beans:property name="jpaVendorAdapter">
+   <beans:bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+    <beans:property name="generateDdl" value="false" />
+   </beans:bean>
+  </beans:property>
+ </beans:bean>
+  
+   <tx:annotation-driven/>
+  
+    <beans:bean id="hibernateJpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+ <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+  destroy-method="close">
+  <beans:property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+  <beans:property name="url"
+   value="jdbc:oracle:thin:@localhost:1521:xe" />
+  <beans:property name="username" value="shelton" />
+  <beans:property name="password" value="shelton" />
+ </beans:bean>
+
+
+ <beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix">
+			<beans:value>/WEB-INF/views/</beans:value>
+		</beans:property>
+		<beans:property name="suffix">
+			<beans:value>.html</beans:value>
+		</beans:property>
+	</beans:bean>
+</beans:beans>
